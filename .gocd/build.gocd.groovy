@@ -25,7 +25,7 @@ GoCD.script {
       pattern = ~/.*/
 
       from = github {
-        fullRepoName = "gocd/gocd"
+        fullRepoName = 'gocd/gocd'
         materialUrl = "https://git.gocd.io/git/${fullRepoName}"
       }
 
@@ -33,16 +33,54 @@ GoCD.script {
         // Build your entire workflow; you can have many pipeline blocks here.
         pipeline("build-linux-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
-          materials { add(ctx.repo) }
           template = 'build-gradle-linux'
+          materials { add(ctx.repo) }
           params = [OS: 'linux', BROWSER: 'firefox']
         }
 
         pipeline("build-windows-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
-          materials { add(ctx.repo) }
           template = 'build-gradle-windows'
+          materials { add(ctx.repo) }
           params = [OS: 'windows', BROWSER: 'msedge']
+        }
+
+        pipeline("plugins-${ctx.branchSanitized}") {
+          group = "gocd-${ctx.branchSanitized}"
+          template = 'plugins-gradle'
+          materials {
+            add(ctx.repo)
+            add(git('go-plugins') {
+              url = 'https://git.gocd.io/git/gocd/go-plugins'
+              shallowClone = true
+            })
+            add(dependency('linux') {
+              pipeline = "build-linux-${ctx.branchSanitized}"
+              stage = 'build-server'
+            })
+            add(dependency('windows') {
+              pipeline = "build-windows-${ctx.branchSanitized}"
+              stage = 'build-server'
+            })
+          }
+        }
+
+        pipeline("installers-${ctx.branchSanitized}") {
+          group = "gocd-${ctx.branchSanitized}"
+          template = 'installers-gradle'
+          materials {
+            add(ctx.repo)
+            add(dependency('go-plugins') {
+              pipeline = "plugins-${ctx.branchSanitized}"
+              stage = 'build'
+            })
+          }
+          environmentVariables = [
+            UPDATE_GOCD_BUILD_MAP: 'Y',
+            WINDOWS_64BIT_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip',
+            WINDOWS_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip'
+          ]
+          params = ['plugins-pipeline-name': "plugins-${ctx.branchSanitized}"]
         }
       }
     }
