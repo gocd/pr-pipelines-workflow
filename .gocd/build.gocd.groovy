@@ -54,13 +54,12 @@ GoCD.script {
 
           materials {
             add(git(ctx.repo.name) {
-              orig = (ctx.repo as GitMaterial)
-              url = orig.url
-              branch = orig.branch
-              username = orig.username
-              password = orig.password
-              encryptedPassword = orig.encryptedPassword
-              shallowClone = orig.shallowClone
+              url = (ctx.repo as GitMaterial).url
+              branch = (ctx.repo as GitMaterial).branch
+              username = (ctx.repo as GitMaterial).username
+              password = (ctx.repo as GitMaterial).password
+              encryptedPassword = (ctx.repo as GitMaterial).encryptedPassword
+              shallowClone = (ctx.repo as GitMaterial).shallowClone
               destination = 'gocd'
             })
             add(git('go-plugins') {
@@ -85,13 +84,12 @@ GoCD.script {
           (ctx.repo as GitMaterial).destination = 'gocd'
           materials {
             add(git(ctx.repo.name) {
-              orig = (ctx.repo as GitMaterial)
-              url = orig.url
-              branch = orig.branch
-              username = orig.username
-              password = orig.password
-              encryptedPassword = orig.encryptedPassword
-              shallowClone = orig.shallowClone
+              url = (ctx.repo as GitMaterial).url
+              branch = (ctx.repo as GitMaterial).branch
+              username = (ctx.repo as GitMaterial).username
+              password = (ctx.repo as GitMaterial).password
+              encryptedPassword = (ctx.repo as GitMaterial).encryptedPassword
+              shallowClone = (ctx.repo as GitMaterial).shallowClone
               destination = 'gocd'
             })
             add(dependency('go-plugins') {
