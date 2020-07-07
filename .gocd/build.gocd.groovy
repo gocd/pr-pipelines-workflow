@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+import cd.go.contrib.plugins.configrepo.groovy.dsl.GitMaterial
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
 
 GoCD.script {
@@ -45,14 +47,26 @@ GoCD.script {
           params = [OS: 'windows', BROWSER: 'msedge']
         }
 
+
         pipeline("plugins-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
           template = 'plugins-gradle'
+
           materials {
-            add(ctx.repo)
+            add(git(ctx.repo.name) {
+              orig = (ctx.repo as GitMaterial)
+              url = orig.url
+              branch = orig.branch
+              username = orig.username
+              password = orig.password
+              encryptedPassword = orig.encryptedPassword
+              shallowClone = orig.shallowClone
+              destination = 'gocd'
+            })
             add(git('go-plugins') {
               url = 'https://git.gocd.io/git/gocd/go-plugins'
               shallowClone = true
+              destination = 'go-plugins'
             })
             add(dependency('linux') {
               pipeline = "build-linux-${ctx.branchSanitized}"
@@ -68,8 +82,18 @@ GoCD.script {
         pipeline("installers-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
           template = 'installers-gradle'
+          (ctx.repo as GitMaterial).destination = 'gocd'
           materials {
-            add(ctx.repo)
+            add(git(ctx.repo.name) {
+              orig = (ctx.repo as GitMaterial)
+              url = orig.url
+              branch = orig.branch
+              username = orig.username
+              password = orig.password
+              encryptedPassword = orig.encryptedPassword
+              shallowClone = orig.shallowClone
+              destination = 'gocd'
+            })
             add(dependency('go-plugins') {
               pipeline = "plugins-${ctx.branchSanitized}"
               stage = 'build'
