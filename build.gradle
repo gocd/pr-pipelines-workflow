@@ -1,0 +1,16 @@
+plugins {
+  id 'base'
+  id 'groovy'
+}
+
+dependencies {
+    compileOnly files("libs/dsl-1.1.0-172.jar")
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDirs ".gocd"
+        }
+    }
+}
