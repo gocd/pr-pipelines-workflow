@@ -26,7 +26,7 @@ GoCD.script {
 
       from = github {
         fullRepoName = "gocd/gocd"
-        materialUrl = "https://git.gocd.io/gocd/gocd.git"
+        materialUrl = "https://git.gocd.io/git/${fullRepoName}"
       }
 
       onMatch { ctx ->
