@@ -53,7 +53,7 @@ GoCD.script {
           template = 'plugins-gradle'
 
           materials {
-            add(git(ctx.repo.name) {
+            add(git('gocd') {
               url = (ctx.repo as GitMaterial).url
               branch = (ctx.repo as GitMaterial).branch
               username = (ctx.repo as GitMaterial).username
@@ -83,7 +83,7 @@ GoCD.script {
           template = 'installers-gradle'
           (ctx.repo as GitMaterial).destination = 'gocd'
           materials {
-            add(git(ctx.repo.name) {
+            add(git('gocd') {
               url = (ctx.repo as GitMaterial).url
               branch = (ctx.repo as GitMaterial).branch
               username = (ctx.repo as GitMaterial).username
