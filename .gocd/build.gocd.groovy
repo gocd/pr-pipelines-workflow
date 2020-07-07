@@ -21,11 +21,6 @@ import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
 GoCD.script {
   branches {
     matching {
-      // OPTIONAL: defaults to match any string. When present,
-      // this will filter/restrict git refs to those that match
-      // the provided pattern.
-      pattern = ~/.*/
-
       from = github {
         fullRepoName = 'gocd/gocd'
         materialUrl = "https://git.gocd.io/git/${fullRepoName}"
@@ -46,7 +41,6 @@ GoCD.script {
           materials { add(ctx.repo) }
           params = [OS: 'windows', BROWSER: 'msedge']
         }
-
 
         pipeline("plugins-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
@@ -81,7 +75,7 @@ GoCD.script {
         pipeline("installers-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
           template = 'installers-gradle'
-          (ctx.repo as GitMaterial).destination = 'gocd'
+
           materials {
             add(git('gocd') {
               url = (ctx.repo as GitMaterial).url
