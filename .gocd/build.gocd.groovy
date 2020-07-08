@@ -15,6 +15,7 @@
  */
 
 
+import cd.go.contrib.plugins.configrepo.groovy.dsl.BranchContext
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GitMaterial
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
 
@@ -26,8 +27,7 @@ GoCD.script {
         materialUrl = "https://git.gocd.io/git/${fullRepoName}"
       }
 
-      onMatch { ctx ->
-        // Build your entire workflow; you can have many pipeline blocks here.
+      onMatch { BranchContext ctx ->
         pipeline("build-linux-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
           template = 'build-gradle-linux'
