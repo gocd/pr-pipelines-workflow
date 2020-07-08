@@ -42,62 +42,54 @@ GoCD.script {
           params = [OS: 'windows', BROWSER: 'msedge']
         }
 
-//        pipeline("plugins-${ctx.branchSanitized}") {
-//          group = "gocd-${ctx.branchSanitized}"
-//          template = 'plugins-gradle'
-//
-//          materials {
-//            add(git('gocd') {
-//              url = (ctx.repo as GitMaterial).url
-//              branch = (ctx.repo as GitMaterial).branch
-//              username = (ctx.repo as GitMaterial).username
-//              password = (ctx.repo as GitMaterial).password
-//              encryptedPassword = (ctx.repo as GitMaterial).encryptedPassword
-//              shallowClone = (ctx.repo as GitMaterial).shallowClone
-//              destination = 'gocd'
-//            })
-//            add(git('go-plugins') {
-//              url = 'https://git.gocd.io/git/gocd/go-plugins'
-//              shallowClone = true
-//              destination = 'go-plugins'
-//            })
-//            add(dependency('linux') {
-//              pipeline = "build-linux-${ctx.branchSanitized}"
-//              stage = 'build-server'
-//            })
-//            add(dependency('windows') {
-//              pipeline = "build-windows-${ctx.branchSanitized}"
-//              stage = 'build-server'
-//            })
-//          }
-//        }
+        pipeline("plugins-${ctx.branchSanitized}") {
+          group = "gocd-${ctx.branchSanitized}"
+          template = 'plugins-gradle'
 
-//        pipeline("installers-${ctx.branchSanitized}") {
-//          group = "gocd-${ctx.branchSanitized}"
-//          template = 'installers-gradle'
-//
-//          materials {
-//            add(git('gocd') {
-//              url = (ctx.repo as GitMaterial).url
-//              branch = (ctx.repo as GitMaterial).branch
-//              username = (ctx.repo as GitMaterial).username
-//              password = (ctx.repo as GitMaterial).password
-//              encryptedPassword = (ctx.repo as GitMaterial).encryptedPassword
-//              shallowClone = (ctx.repo as GitMaterial).shallowClone
-//              destination = 'gocd'
-//            })
-//            add(dependency('go-plugins') {
-//              pipeline = "plugins-${ctx.branchSanitized}"
-//              stage = 'build'
-//            })
-//          }
-//          environmentVariables = [
-//            UPDATE_GOCD_BUILD_MAP: 'Y',
-//            WINDOWS_64BIT_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip',
-//            WINDOWS_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip'
-//          ]
-//          params = ['plugins-pipeline-name': String.format("plugins-%s", ctx.branchSanitized)]
-//        }
+          materials {
+            add((ctx.repo as GitMaterial).dup({
+              destination = 'gocd'
+            }))
+
+            git('go-plugins') {
+              url = 'https://git.gocd.io/git/gocd/go-plugins'
+              shallowClone = true
+              destination = 'go-plugins'
+            }
+
+            dependency('linux') {
+              pipeline = "build-linux-${ctx.branchSanitized}"
+              stage = 'build-server'
+            }
+
+            dependency('windows') {
+              pipeline = "build-windows-${ctx.branchSanitized}"
+              stage = 'build-server'
+            }
+          }
+        }
+
+        pipeline("installers-${ctx.branchSanitized}") {
+          group = "gocd-${ctx.branchSanitized}"
+          template = 'installers-gradle'
+
+          materials {
+            add((ctx.repo as GitMaterial).dup({
+              destination = 'gocd'
+            }))
+
+            dependency('go-plugins') {
+              pipeline = "plugins-${ctx.branchSanitized}"
+              stage = 'build'
+            }
+          }
+          environmentVariables = [
+            UPDATE_GOCD_BUILD_MAP: 'Y',
+            WINDOWS_64BIT_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip',
+            WINDOWS_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip'
+          ]
+          params = ['plugins-pipeline-name': String.format("plugins-%s", ctx.branchSanitized)]
+        }
       }
     }
   }
