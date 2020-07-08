@@ -104,7 +104,9 @@ GoCD.script {
 
             git('ruby-functional-tests') {
               url = 'https://git.gocd.io/git/gocd/ruby-functional-tests'
-              destination = name
+              destination = '#{selenium-working-dir}'
+              shallowClone = true
+              blacklist = ['**/*']
             }
           }
           environmentVariables = [
@@ -134,7 +136,8 @@ GoCD.script {
 
             git('ruby-functional-tests') {
               url = 'https://git.gocd.io/git/gocd/ruby-functional-tests'
-              destination = name
+              shallowClone = true
+              blacklist = ['**/*']
             }
           }
           environmentVariables = [
