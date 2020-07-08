@@ -19,6 +19,8 @@ import cd.go.contrib.plugins.configrepo.groovy.dsl.BranchContext
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GitMaterial
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
 
+final List<String> pipeNames = []
+
 GoCD.script {
   branches {
     matching {
@@ -157,7 +159,16 @@ GoCD.script {
             elastic_agents_tags       : 'elastic_agent',
           ]
         }
+
       }
+    }
+  }
+
+  pipeNames.addAll(pipelines.collect { p -> p.name })
+
+  environments {
+    environment("gocd") {
+      pipelines = pipeNames
     }
   }
 }
