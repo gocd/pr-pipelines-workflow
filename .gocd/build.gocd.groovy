@@ -19,7 +19,7 @@ import cd.go.contrib.plugins.configrepo.groovy.dsl.BranchContext
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GitMaterial
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
 
-final List<String> pipeNames = []
+final List<String> pullRequestPipelineNames = []
 
 GoCD.script {
   branches {
@@ -164,11 +164,13 @@ GoCD.script {
     }
   }
 
-  pipeNames.addAll(pipelines.collect { p -> p.name })
+  // gather all the pipelines generated to this point so we can add
+  // them to the gocd environment
+  pullRequestPipelineNames.addAll(pipelines.collect { p -> p.name })
 
   environments {
-    environment("gocd") {
-      pipelines = pipeNames
+    environment('gocd') {
+      pipelines = pullRequestPipelineNames // add all pipelines
     }
   }
 }
