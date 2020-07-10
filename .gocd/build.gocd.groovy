@@ -41,7 +41,6 @@ GoCD.script {
           group = "gocd-${ctx.branchSanitized}"
           template = 'build-gradle-windows'
           materials { add(ctx.repo) }
-          params = [OS: 'windows', BROWSER: 'msedge']
         }
 
         pipeline("plugins-${ctx.branchSanitized}") {
