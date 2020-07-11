@@ -20,6 +20,7 @@ import cd.go.contrib.plugins.configrepo.groovy.dsl.GitMaterial
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
 
 final List<String> pullRequestPipelineNames = []
+Closure<Boolean> manualTrigger = { BranchContext ctx -> ctx.author.equals('dependabot-preview[bot]') }
 
 GoCD.script {
   branches {
@@ -30,17 +31,45 @@ GoCD.script {
       }
 
       onMatch { BranchContext ctx ->
+        if (manualTrigger(ctx)) {
+          pipeline("trigger-${ctx.branchSanitized}") {
+            group = "gocd-${ctx.branchSanitized}"
+            materials { add(ctx.repo) }
+            stages {
+              stage("trigger") {
+                approval { type = 'manual' }
+                jobs { job("do-nothing") { tasks { exec { commandLine = ['echo', "Triggering pull request: [${ctx.branch}] ${ctx.title}"] } } } }
+              }
+            }
+          }
+        }
+
         pipeline("build-linux-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
           template = 'build-gradle-linux'
-          materials { add(ctx.repo) }
-          params = [OS: 'linux', BROWSER: 'firefox']
+          materials {
+            add(ctx.repo)
+            if (manualTrigger(ctx)) {
+              dependency('trigger') {
+                pipeline = "trigger-${ctx.branchSanitized}"
+                stage = 'trigger'
+              }
+            }
+          }
         }
 
         pipeline("build-windows-${ctx.branchSanitized}") {
           group = "gocd-${ctx.branchSanitized}"
           template = 'build-gradle-windows'
-          materials { add(ctx.repo) }
+          materials {
+            add(ctx.repo)
+            if (manualTrigger(ctx)) {
+              dependency('trigger') {
+                pipeline = "trigger-${ctx.branchSanitized}"
+                stage = 'trigger'
+              }
+            }
+          }
         }
 
         pipeline("plugins-${ctx.branchSanitized}") {
