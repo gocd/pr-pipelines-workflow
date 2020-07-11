@@ -18,11 +18,25 @@
 import cd.go.contrib.plugins.configrepo.groovy.dsl.BranchContext
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GitMaterial
 import cd.go.contrib.plugins.configrepo.groovy.dsl.GoCD
+import groovy.json.JsonSlurper
 
-final List<String> pullRequestPipelineNames = []
-Closure<Boolean> manualTrigger = { BranchContext ctx -> ctx.author.equals('dependabot-preview[bot]') }
+final JsonSlurper JSON = new JsonSlurper()
 
 GoCD.script {
+  final List<String> pullRequestPipelineNames = []
+
+  Closure<Object> parse = { String key, Object defaultValue ->
+    return lookup(key).startsWith("JSON:") ? // this protects stubbed values during preflight
+      JSON.parseText(key.substring("JSON:".length())) :
+      defaultValue
+  }
+  Closure<Boolean> manualTrigger = { BranchContext ctx ->
+    def users = parse("manual.trigger.authors", []) as List<String>
+    def labels = parse("manual.trigger.labels", []) as List<String>
+    return users.contains(ctx.author) ||
+      ctx.labels.any { s -> labels.contains(s) }
+  }
+
   branches {
     matching {
       from = github {
