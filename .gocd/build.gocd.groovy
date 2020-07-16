@@ -40,6 +40,7 @@ GoCD.script {
   }
 
   Closure<Boolean> includeWindows = { lookup("include.windows.pipelines").equalsIgnoreCase("true") }
+
   branches {
     matching {
       from = github {
