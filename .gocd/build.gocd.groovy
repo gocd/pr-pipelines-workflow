@@ -39,6 +39,7 @@ GoCD.script {
       ctx.labels.any { item -> labels.contains(item) }
   }
 
+  Closure<Boolean> includeWindows = { lookup("include.windows.pipelines").equalsIgnoreCase("true") }
   branches {
     matching {
       from = github {
@@ -52,9 +53,9 @@ GoCD.script {
             group = "gocd-${ctx.branchSanitized}"
             materials { add(ctx.repo) }
             stages {
-              stage("trigger") {
+              stage('trigger') {
                 approval { type = 'manual' }
-                jobs { job("do-nothing") { tasks { exec { commandLine = ['echo', "Triggering pull request: [${ctx.branch}] ${ctx.title}"] } } } }
+                jobs { job('do-nothing') { tasks { exec { commandLine = ['echo', "Triggering pull request: [${ctx.branch}] ${ctx.title}"] } } } }
               }
             }
           }
@@ -74,15 +75,17 @@ GoCD.script {
           }
         }
 
-        pipeline("build-windows-${ctx.branchSanitized}") {
-          group = "gocd-${ctx.branchSanitized}"
-          template = 'build-gradle-windows'
-          materials {
-            add(ctx.repo)
-            if (manualTrigger(ctx)) {
-              dependency('trigger') {
-                pipeline = "trigger-${ctx.branchSanitized}"
-                stage = 'trigger'
+        if (includeWindows()) {
+          pipeline("build-windows-${ctx.branchSanitized}") {
+            group = "gocd-${ctx.branchSanitized}"
+            template = 'build-gradle-windows'
+            materials {
+              add(ctx.repo)
+              if (manualTrigger(ctx)) {
+                dependency('trigger') {
+                  pipeline = "trigger-${ctx.branchSanitized}"
+                  stage = 'trigger'
+                }
               }
             }
           }
@@ -109,9 +112,11 @@ GoCD.script {
               stage = 'build-server'
             }
 
-            dependency('windows') {
-              pipeline = "build-windows-${ctx.branchSanitized}"
-              stage = 'build-server'
+            if (includeWindows()) {
+              dependency('windows') {
+                pipeline = "build-windows-${ctx.branchSanitized}"
+                stage = 'build-server'
+              }
             }
           }
         }
