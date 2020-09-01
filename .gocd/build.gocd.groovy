@@ -41,17 +41,25 @@ GoCD.script {
 
   Closure<Boolean> includeWindows = { lookup("include.windows.pipelines").equalsIgnoreCase("true") }
 
+  Closure<String> groupName = { BranchContext ctx -> sanitizeName("gocd-${ctx.branch}-${ctx.title}") }
+
   branches {
     matching {
       from = github {
         fullRepoName = 'gocd/gocd'
+        apiAuthToken = lookup('github.auth.token')
+
         materialUrl = "https://git.gocd.io/git/${fullRepoName}"
       }
 
       onMatch { BranchContext ctx ->
+
+        // post build status back to github
+        ctx.repo.notifiesBy(ctx.provider)
+
         if (manualTrigger(ctx)) {
           pipeline("trigger-${ctx.branchSanitized}") {
-            group = "gocd-${ctx.branchSanitized}"
+            group = groupName(ctx)
             materials { add(ctx.repo) }
             stages {
               stage('trigger') {
@@ -63,7 +71,7 @@ GoCD.script {
         }
 
         pipeline("build-linux-${ctx.branchSanitized}") {
-          group = "gocd-${ctx.branchSanitized}"
+          group = groupName(ctx)
           template = 'build-gradle-linux'
           materials {
             add(ctx.repo)
@@ -78,7 +86,7 @@ GoCD.script {
 
         if (includeWindows()) {
           pipeline("build-windows-${ctx.branchSanitized}") {
-            group = "gocd-${ctx.branchSanitized}"
+            group = groupName(ctx)
             template = 'build-gradle-windows'
             materials {
               add(ctx.repo)
@@ -93,7 +101,7 @@ GoCD.script {
         }
 
         pipeline("plugins-${ctx.branchSanitized}") {
-          group = "gocd-${ctx.branchSanitized}"
+          group = groupName(ctx)
           template = 'plugins-gradle'
 
           materials {
@@ -123,7 +131,7 @@ GoCD.script {
         }
 
         pipeline("installers-${ctx.branchSanitized}") {
-          group = "gocd-${ctx.branchSanitized}"
+          group = groupName(ctx)
           template = 'installers-gradle'
 
           materials {
@@ -143,7 +151,7 @@ GoCD.script {
         }
 
         pipeline("smoke-${ctx.branchSanitized}") {
-          group = "gocd-${ctx.branchSanitized}"
+          group = groupName(ctx)
           template = 'smoke-gradle'
 
           materials {
@@ -175,7 +183,7 @@ GoCD.script {
         }
 
         pipeline("regression-SPAs-${ctx.branchSanitized}") {
-          group = "gocd-${ctx.branchSanitized}"
+          group = groupName(ctx)
           template = 'regression-ruby-webdriver'
 
           materials {
