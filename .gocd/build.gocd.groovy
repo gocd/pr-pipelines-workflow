@@ -172,7 +172,7 @@ GoCD.script {
           environmentVariables = [
             AGENT_MEM              : '64m',
             AGENT_MAX_MEM          : '512m',
-            GO_VERSION             : '20.6.0',
+            GO_VERSION             : '20.8.0',
             ADDITIONAL_STARTUP_ARGS: '-Dgocd.environments.show.pipelines=Y',
             RAILS_LOG_LEVEL        : 'debug',
           ]
@@ -201,7 +201,7 @@ GoCD.script {
             }
           }
           environmentVariables = [
-            GO_VERSION                   : '20.6.0',
+            GO_VERSION                   : '20.8.0',
             browser                      : 'firefox',
             ADDITIONAL_STARTUP_ARGS      : '-Dgocd.environments.show.pipelines=Y',
             SHINE_ENABLED                : 'Y',
