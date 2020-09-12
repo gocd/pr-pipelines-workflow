@@ -135,9 +135,7 @@ GoCD.script {
           template = 'installers-gradle'
 
           materials {
-            add((ctx.repo as GitMaterial).dup({
-              shallowClone = false
-            }))
+            add(ctx.repo)
 
             dependency('go-plugins') {
               pipeline = "plugins-${ctx.branchSanitized}"
