@@ -66,7 +66,7 @@ GoCD.script {
                 approval { type = 'manual' }
                 jobs { job('do-nothing') {
                   elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
-                  tasks { exec { commandLine = ['echo', "Triggering pull request: [${ctx.branch}] ${ctx.title}"] } } }
+                  tasks { exec { commandLine = ['echo', "Triggering pull request [${ctx.identifier}]: [${ctx.branch}] ${ctx.title}"] } } }
                 }
               }
             }
@@ -184,6 +184,26 @@ GoCD.script {
           ]
         }
 
+        pipeline("trigger-regressions-${ctx.branchSanitized}") {
+          group = groupName(ctx)
+          materials {
+            dependency('smoke') {
+              pipeline = "smoke-${ctx.branchSanitized}"
+              stage = 'Smoke'
+            }
+          }
+
+          stages {
+            stage('trigger') {
+              approval { type = 'manual' }
+              jobs { job('do-nothing') {
+                elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
+                tasks { exec { commandLine = ['echo', "Triggering regressions on pull request [${ctx.identifier}]: [${ctx.branch}] ${ctx.title}"] } } }
+              }
+            }
+          }
+        }
+
         pipeline("regression-SPAs-${ctx.branchSanitized}") {
           group = groupName(ctx)
           template = 'regression-ruby-webdriver'
@@ -192,6 +212,12 @@ GoCD.script {
             dependency('smoke') {
               pipeline = "smoke-${ctx.branchSanitized}"
               stage = 'Smoke'
+              ignoreForScheduling = true
+            }
+
+            dependency('trigger-regressions') {
+              pipeline = "trigger-regressions-${ctx.branchSanitized}"
+              stage = 'trigger'
             }
 
             git('ruby-functional-tests') {
