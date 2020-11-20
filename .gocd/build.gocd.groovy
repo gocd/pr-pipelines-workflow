@@ -66,7 +66,7 @@ GoCD.script {
                 approval { type = 'manual' }
                 jobs { job('do-nothing') {
                   elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
-                  tasks { exec { commandLine = ['echo', "Triggering pull request [${ctx.identifier}]: [${ctx.branch}] ${ctx.title}"] } } }
+                  tasks { exec { commandLine = ['echo', "Triggering pull request [${ctx.identifier.replace('#', "##")}]: [${ctx.branch}] ${ctx.title}"] } } }
                 }
               }
             }
@@ -198,7 +198,7 @@ GoCD.script {
               approval { type = 'manual' }
               jobs { job('do-nothing') {
                 elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
-                tasks { exec { commandLine = ['echo', "Triggering regressions on pull request [${ctx.identifier}]: [${ctx.branch}] ${ctx.title}"] } } }
+                tasks { exec { commandLine = ['echo', "Triggering regressions on pull request [${ctx.identifier.replace('#', "##")}]: [${ctx.branch}] ${ctx.title}"] } } }
               }
             }
           }
