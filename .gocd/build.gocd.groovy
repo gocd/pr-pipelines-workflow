@@ -32,7 +32,7 @@ GoCD.script {
       defaultValue
   }
 
-  Closure<String> escapeHashes = { String s -> s.replace(/\#/g, “##”) }
+  Closure<String> escapeHashes = { String s -> s.replaceAll(/\#/, “##”) }
 
   Closure<Boolean> manualTrigger = { BranchContext ctx ->
     def users = parse('manual.trigger.authors', []) as List<String>
