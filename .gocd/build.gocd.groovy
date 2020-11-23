@@ -32,6 +32,8 @@ GoCD.script {
       defaultValue
   }
 
+  Closure<String> escapeHashes = { String s -> s.replace(/\#/g, “##”) }
+
   Closure<Boolean> manualTrigger = { BranchContext ctx ->
     def users = parse('manual.trigger.authors', []) as List<String>
     def labels = parse('manual.trigger.labels', []) as List<String>
@@ -66,7 +68,7 @@ GoCD.script {
                 approval { type = 'manual' }
                 jobs { job('do-nothing') {
                   elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
-                  tasks { exec { commandLine = ['echo', "Triggering pull request: [${ctx.branch}] ${ctx.title}"] } } }
+                  tasks { exec { commandLine = ['echo', escapeHashes("Triggering pull request: [${ctx.branch}] ${ctx.title}")] } } }
                 }
               }
             }
@@ -198,7 +200,7 @@ GoCD.script {
               approval { type = 'manual' }
               jobs { job('do-nothing') {
                 elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
-                tasks { exec { commandLine = ['echo', "Triggering regressions on pull request: [${ctx.branch}] ${ctx.title}"] } } }
+                tasks { exec { commandLine = ['echo', escapeHashes("Triggering regressions on pull request: [${ctx.branch}] ${ctx.title}")] } } }
               }
             }
           }
