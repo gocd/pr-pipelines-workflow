@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly files("libs/dsl-1.1.0-230.jar")
+    compileOnly files("libs/dsl-2.0.0-241.jar")
 }
 
 sourceSets {
