@@ -3,8 +3,14 @@ plugins {
   id 'groovy'
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly files("libs/dsl-2.0.0-241.jar")
+    compileOnly 'org.codehaus.groovy:groovy:3.0.9'
+    compileOnly 'org.codehaus.groovy:groovy-json:3.0.9'
 }
 
 sourceSets {
