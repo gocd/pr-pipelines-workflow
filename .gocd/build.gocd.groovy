@@ -211,12 +211,12 @@ GoCD.script {
             GO_DISALLOW_PROPERTIES_ACCESS: 'false',
           ]
           params = [
-            spa_tags                  : 'SPA,!agentspage,!agentsfilter',
-            regression_tags           : '!SPA,!smoke,!agent_manual_registration,!bundled-auth-plugins,!analytics,!agentsfilter,!api,!VSM_analytics,!wip,!roles-spa,!drain_mode,!WIP,!elastic_agent,!elastic_agent_profile,!run-on-docker,!elastic_agent_profiles,!tfs,!hg credentials',
+            spa_tags                  : 'spa,!agentspage,!agentsfilter',
+            regression_tags           : '!spa,!smoke,!agent_manual_registration,!bundled-auth-plugins,!analytics,!agentsfilter,!api,!vsm_analytics,!wip,!roles-spa,!drain_mode,!wip,!elastic_agent,!elastic_agent_profile,!run-on-docker,!elastic_agent_profiles,!tfs,!hg credentials',
             'installers-pipeline-name': String.format("installers-%s/smoke-%s", ctx.branchSanitized, ctx.branchSanitized),
             'plugins-pipeline-name'   : String.format("plugins-%s/installers-%s/smoke-%s", ctx.branchSanitized, ctx.branchSanitized, ctx.branchSanitized),
             bundled_auth_plugins      : 'bundled-auth-plugins',
-            api_tags                  : '!SPA,!smoke,!agent_manual_registration,!pipeline_selector,!bundled-auth-plugins,!analytics,!external_artifacts,api',
+            api_tags                  : '!spa,!smoke,!agent_manual_registration,!pipeline_selector,!bundled-auth-plugins,!analytics,!external_artifacts,api',
             maintenance_mode_tags     : 'drain_mode',
             elastic_agents_tags       : 'elastic_agent',
           ]
