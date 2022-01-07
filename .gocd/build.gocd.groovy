@@ -119,6 +119,7 @@ GoCD.script {
               url = 'https://git.gocd.io/git/gocd/go-plugins'
               shallowClone = true
               destination = 'go-plugins'
+              blacklist = ['**/*']
             }
 
             dependency('linux') {
