@@ -150,8 +150,6 @@ GoCD.script {
           }
           environmentVariables = [
             UPDATE_GOCD_BUILD_MAP: 'Y',
-            WINDOWS_64BIT_JDK_URL: 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip',
-            WINDOWS_JDK_URL      : 'https://nexus.gocd.io/repository/s3-mirrors/local/jdk/openjdk-11.0.2_windows-x64_bin.zip',
           ]
           params = ['plugins-pipeline-name': String.format("plugins-%s", ctx.branchSanitized)]
         }
