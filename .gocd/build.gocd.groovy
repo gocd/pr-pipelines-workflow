@@ -57,7 +57,7 @@ GoCD.script {
       onMatch { BranchContext ctx ->
 
         // post build status back to github
-        ctx.repo.name = ctx.branchSanitized
+        ctx.repo.name = "gocd_${ctx.branchSanitized}"
         ctx.repo.notifiesBy(ctx.provider)
 
         if (manualTrigger(ctx)) {
@@ -112,8 +112,8 @@ GoCD.script {
 
           materials {
             add((ctx.repo as GitMaterial).dup({
-              name = 'gocd'
-              destination = name
+              name = "gocd_${ctx.branchSanitized}"
+              destination = 'gocd'
             }))
 
             git('go-plugins') {
