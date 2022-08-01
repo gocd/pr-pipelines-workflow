@@ -57,6 +57,7 @@ GoCD.script {
       onMatch { BranchContext ctx ->
 
         // post build status back to github
+        ctx.repo.name = ctx.branchSanitized
         ctx.repo.notifiesBy(ctx.provider)
 
         if (manualTrigger(ctx)) {
