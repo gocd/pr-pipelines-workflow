@@ -181,7 +181,6 @@ GoCD.script {
           params = [
             'installers-pipeline-name': String.format("installers-%s", ctx.branchSanitized),
             'plugins-pipeline-name'   : String.format("plugins-%s/installers-%s", ctx.branchSanitized, ctx.branchSanitized),
-            'sahi-working-dir'        : 'sahi-tests',
             'selenium-working-dir'    : 'selenium-tests',
           ]
         }
