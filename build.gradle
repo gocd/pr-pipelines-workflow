@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     compileOnly 'cd.go.groovydsl:dsl:2.1.2-446'
-    compileOnly 'org.codehaus.groovy:groovy:3.0.13'
+    compileOnly 'org.codehaus.groovy:groovy:3.0.14'
     compileOnly 'org.codehaus.groovy:groovy-json:3.0.14'
 }
 
