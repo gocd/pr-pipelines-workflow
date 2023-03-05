@@ -68,7 +68,7 @@ GoCD.script {
               stage('trigger') {
                 approval { type = 'manual' }
                 jobs { job('do-nothing') {
-                  elasticProfileId = 'ecs-dind-gocd-agent' // the tiniest profile we have
+                  elasticProfileId = 'ecs-gocd-dev-build' // the tiniest profile we have
                   tasks { exec { commandLine = ['echo', escapeHashes("Triggering pull request: [${ctx.branch}] ${ctx.title}")] } } }
                 }
               }
