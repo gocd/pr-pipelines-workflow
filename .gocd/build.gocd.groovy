@@ -167,7 +167,6 @@ GoCD.script {
 
             git('ruby-functional-tests') {
               url = 'https://git.gocd.io/git/gocd/ruby-functional-tests'
-              destination = '#{selenium-working-dir}'
               shallowClone = true
               blacklist = ['**/*']
             }
@@ -181,7 +180,6 @@ GoCD.script {
           params = [
             'installers-pipeline-name': String.format("installers-%s", ctx.branchSanitized),
             'plugins-pipeline-name'   : String.format("plugins-%s/installers-%s", ctx.branchSanitized, ctx.branchSanitized),
-            'selenium-working-dir'    : 'selenium-tests',
           ]
         }
 
