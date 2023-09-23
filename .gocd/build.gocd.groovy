@@ -209,7 +209,7 @@ GoCD.script {
             'installers-pipeline-name': String.format("installers-%s/smoke-%s", ctx.branchSanitized, ctx.branchSanitized),
             'plugins-pipeline-name'   : String.format("plugins-%s/installers-%s/smoke-%s", ctx.branchSanitized, ctx.branchSanitized, ctx.branchSanitized),
             spa_tags                  : 'spa,!agentspage',
-            regression_tags           : '!wip,!smoke,!api,!agent_manual_registration,!bundled-auth-plugins,!run-on-docker,!spa,!smoke,!elastic_agent,!elastic_agent_profile,!maintenance_mode,!analytics,!vsm_analytics,!create pipeline',
+            regression_tags           : '!wip,!smoke,!api,!agent_manual_registration,!bundled-auth-plugins,!run-on-docker,!spa,!smoke,!elastic_agent_profile,!maintenance_mode,!tfs,!analytics,!vsm_analytics,!create pipeline',
             bundled_auth_plugins      : 'bundled-auth-plugins',
             api_tags                  : 'api',
             maintenance_mode_tags     : 'maintenance_mode',
