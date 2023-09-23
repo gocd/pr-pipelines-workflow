@@ -203,9 +203,7 @@ GoCD.script {
           environmentVariables = [
             browser                      : 'firefox',
             ADDITIONAL_STARTUP_ARGS      : '-Dgocd.environments.show.pipelines=Y',
-            SHINE_ENABLED                : 'Y',
             RAILS_LOG_LEVEL              : 'debug',
-            GO_DISALLOW_PROPERTIES_ACCESS: 'false',
           ]
           params = [
             'installers-pipeline-name': String.format("installers-%s/smoke-%s", ctx.branchSanitized, ctx.branchSanitized),
