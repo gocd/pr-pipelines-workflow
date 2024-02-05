@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'cd.go.groovydsl:dsl:2.1.3-617'
+    compileOnly 'cd.go.groovydsl:dsl:2.1.3-629'
     compileOnly 'org.codehaus.groovy:groovy:3.0.20'
     compileOnly 'org.codehaus.groovy:groovy-json:3.0.20'
 }
