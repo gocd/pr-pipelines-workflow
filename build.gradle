@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.apache.groovy:groovy-json:4.0.25'
+    compileOnly 'org.apache.groovy:groovy-json:4.0.26'
     implementation 'cd.go.groovydsl:dsl:2.2.0-803'
 }
 
