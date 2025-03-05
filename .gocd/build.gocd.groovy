@@ -32,11 +32,9 @@ GoCD.script {
       defaultValue
   }
 
-  Closure<String> escapeHashes = { String s -> s.replaceAll(/#/, '##') }
-
-  Closure<Boolean> manualTrigger = { BranchContext ctx ->
-    def users = parse('manual.trigger.authors', []) as List<String>
-    def labels = parse('manual.trigger.labels', []) as List<String>
+  Closure<Boolean> automaticTrigger = { BranchContext ctx ->
+    def users = parse('automatic.trigger.authors', []) as List<String>
+    def labels = parse('automatic.trigger.labels', []) as List<String>
     return users.contains(ctx.author) ||
       ctx.labels.any { item -> labels.contains(item) }
   }
@@ -59,34 +57,13 @@ GoCD.script {
         // post build status back to github
         ctx.repo.name = "gocd_${ctx.branchSanitized}"
         ctx.repo.notifiesBy(ctx.provider)
-
-        if (manualTrigger(ctx)) {
-          pipeline("trigger-${ctx.branchSanitized}") {
-            group = groupName(ctx)
-            materials { add(ctx.repo) }
-            stages {
-              stage('trigger') {
-                approval { type = 'manual' }
-                jobs { job('do-nothing') {
-                  elasticProfileId = 'ecs-gocd-dev-build' // the tiniest profile we have
-                  tasks { exec { commandLine = ['echo', escapeHashes("Triggering pull request: [${ctx.branch}] ${ctx.title}")] } } }
-                }
-              }
-            }
-          }
-        }
+        ctx.repo.setAutoUpdate(automaticTrigger(ctx))
 
         pipeline("build-linux-${ctx.branchSanitized}") {
           group = groupName(ctx)
           template = 'build-gradle-linux'
           materials {
             add(ctx.repo)
-            if (manualTrigger(ctx)) {
-              dependency('trigger') {
-                pipeline = "trigger-${ctx.branchSanitized}"
-                stage = 'trigger'
-              }
-            }
           }
         }
 
@@ -96,7 +73,7 @@ GoCD.script {
             template = 'build-gradle-windows'
             materials {
               add(ctx.repo)
-              
+
               dependency('linux') {
                 pipeline = "build-linux-${ctx.branchSanitized}"
                 stage = 'build-non-server'
