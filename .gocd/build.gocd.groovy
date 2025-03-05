@@ -96,11 +96,10 @@ GoCD.script {
             template = 'build-gradle-windows'
             materials {
               add(ctx.repo)
-              if (manualTrigger(ctx)) {
-                dependency('trigger') {
-                  pipeline = "trigger-${ctx.branchSanitized}"
-                  stage = 'trigger'
-                }
+              
+              dependency('linux') {
+                pipeline = "build-linux-${ctx.branchSanitized}"
+                stage = 'build-non-server'
               }
             }
           }
@@ -126,13 +125,6 @@ GoCD.script {
             dependency('linux') {
               pipeline = "build-linux-${ctx.branchSanitized}"
               stage = 'build-server'
-            }
-
-            if (includeWindows()) {
-              dependency('windows') {
-                pipeline = "build-windows-${ctx.branchSanitized}"
-                stage = 'build-server'
-              }
             }
           }
         }
@@ -198,6 +190,13 @@ GoCD.script {
               url = 'https://git.gocd.io/git/gocd/ruby-functional-tests'
               shallowClone = true
               blacklist = ['**/*']
+            }
+
+            if (includeWindows()) {
+              dependency('windows') {
+                pipeline = "build-windows-${ctx.branchSanitized}"
+                stage = 'build-server'
+              }
             }
           }
           environmentVariables = [
