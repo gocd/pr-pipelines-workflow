@@ -139,6 +139,13 @@ GoCD.script {
               shallowClone = true
               blacklist = ['**/*']
             }
+
+            if (includeWindows()) {
+              dependency('windows') {
+                pipeline = "build-windows-${ctx.branchSanitized}"
+                stage = 'build-server'
+              }
+            }
           }
           environmentVariables = [
             AGENT_MEM              : '64m',
@@ -167,13 +174,6 @@ GoCD.script {
               url = 'https://git.gocd.io/git/gocd/ruby-functional-tests'
               shallowClone = true
               blacklist = ['**/*']
-            }
-
-            if (includeWindows()) {
-              dependency('windows') {
-                pipeline = "build-windows-${ctx.branchSanitized}"
-                stage = 'build-server'
-              }
             }
           }
           environmentVariables = [
