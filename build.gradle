@@ -8,8 +8,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.apache.groovy:groovy-json:5.0.2'
-    implementation 'cd.go.groovydsl:dsl:3.1.0-906'
+    compileOnly 'org.apache.groovy:groovy-json:5.0.3'
+    implementation 'cd.go.groovydsl:dsl:3.1.0-913'
 }
 
 sourceSets {
