@@ -118,9 +118,6 @@ GoCD.script {
               stage = 'build'
             }
           }
-          environmentVariables = [
-            UPDATE_GOCD_BUILD_MAP: 'Y',
-          ]
           params = ['plugins-pipeline-name': String.format("plugins-%s", ctx.branchSanitized)]
         }
 
