@@ -26,10 +26,10 @@ def baseMaterial = new GitMaterial({
 })
 
 def branches = [
-//  [
-//    url: "https://github.com/gocd/some-private-repo.git",
-//    name: 'branch-1',
-//  ],
+  [
+    url: "https://github.com/gocd/gocd-ghsa-hj3c-q23m-fxcg.git",
+    name: 'fix-1',
+  ],
 //  [
 //    url: "https://github.com/gocd/some-private-repo.git",
 //    name: 'branch-2',
